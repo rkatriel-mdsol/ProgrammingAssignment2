@@ -1,15 +1,53 @@
-## Put comments here that give an overall description of what your
-## functions do
-
-## Write a short comment describing this function
+## The following pair of functions cache the inverse of a matrix to optimize the computation:
+## 1. makeCacheMatrix: creates a special "matrix" object that can cache its inverse
+## 2. cacheSolve: computes the inverse of the special "matrix" returned by makeCacheMatrix
 
 makeCacheMatrix <- function(x = matrix()) {
+  ## Arguments: x is a square (invertible) matrix
+  ## Creates a special "matrix", which is really a list containing functions to
+  ## 1. set the value of the vector
+  ## 2. get the value of the vector
+  ## 3. set the value of the inverse
+  ## 4. get the value of the inverse
 
+  i <- NULL
+  set <- function(y) {
+    x <<- y
+    i <<- NULL
+  }
+  get <- function() x
+  setinv <- function(inv) i <<- inv
+  getinv <- function() i
+  list(set = set, get = get,
+       setinv = setinv,
+       getinv = getinv)
 }
-
-
-## Write a short comment describing this function
 
 cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+  ## Arguments: x is a special "matrix" (created with makeCacheMatrix)
+  ## Calculates the inverse of the special "matrix" x by
+  ## First checking to see if the inverse has already been calculated:
+  ##   If so, gets the inverse from the cache (via getinv) and skips the computation;
+  ##   Otherwise, calculates the inverse of the data and sets the inverse in the cache (via setinv)
+
+  i <- x$getinv()
+  if(!is.null(i)) {
+    message("getting cached data")
+    return(i)
+  }
+  data <- x$get()
+  i <- solve(data, ...)
+  x$setinv(i)
+  i
 }
+
+## Test the functions (and time them)
+m <- matrix(rnorm(1000000, mean=0, sd=1), 1000, 1000)
+x <- makeCacheMatrix(m)
+cacheSolve(x)
+
+## user = 0.000, system = 0.000, elapsed = 0.001
+ptm <- proc.time(); s1 <- x$getinv(); proc.time() - ptm
+
+## user =  2.192, system = 0.027, elapsed = 2.203
+ptm <- proc.time(); s2 <- solve(m); proc.time() - ptm
