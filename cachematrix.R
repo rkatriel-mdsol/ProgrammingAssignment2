@@ -40,14 +40,3 @@ cacheSolve <- function(x, ...) {
   x$setinv(i)
   i
 }
-
-## Test the functions (and time them)
-m <- matrix(rnorm(1000000, mean=0, sd=1), 1000, 1000)
-x <- makeCacheMatrix(m)
-cacheSolve(x)
-
-## user = 0.000, system = 0.000, elapsed = 0.001
-ptm <- proc.time(); s1 <- x$getinv(); proc.time() - ptm
-
-## user =  2.192, system = 0.027, elapsed = 2.203
-ptm <- proc.time(); s2 <- solve(m); proc.time() - ptm
