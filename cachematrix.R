@@ -1,3 +1,5 @@
+## Author: Ron Katriel
+
 ## The following pair of functions cache the inverse of a matrix to optimize the computation:
 ## 1. makeCacheMatrix: creates a special "matrix" object that can cache its inverse
 ## 2. cacheSolve: computes the inverse of the special "matrix" returned by makeCacheMatrix
